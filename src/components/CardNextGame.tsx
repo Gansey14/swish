@@ -31,7 +31,7 @@ export type GameInfo = {
 		location: string;
 		gameType: "Indoor" | "Outdoor";
 	};
-	gameSize: number;
+	gameSize: any;
 	availableSpots: number;
 	time: string;
 	organiser: {
