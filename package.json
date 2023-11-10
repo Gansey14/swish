@@ -11,8 +11,7 @@
     "test.e2e": "cypress run",
     "test.unit": "vitest",
     "lint": "eslint",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d www"
   },
   "dependencies": {
     "@capacitor/app": "5.0.6",
