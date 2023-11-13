@@ -52,6 +52,7 @@ import CreatePage2 from "./pages/CreatePage2";
 import CreatePage3 from "./pages/CreatePage3";
 import GamesList from "./components/GamesList";
 import EditPage from "./pages/EditPage";
+import CreatePage4 from "./pages/CreatePage4";
 
 setupIonicReact();
 
@@ -112,7 +113,7 @@ const App: React.FC = () => (
 
 					{/* Routing the path of /disclaimerbookingpag to the disclaimer about booking the gym */}
 					<Route path="/create3">
-						<CreatePage3 />
+						<CreatePage4 />
 					</Route>
 
 					{/* Routing an emoty path of / to the home page */}

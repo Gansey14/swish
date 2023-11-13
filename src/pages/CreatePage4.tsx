@@ -22,6 +22,8 @@ import "./CreatePage2.css";
 import "./CreatePage3.css";
 import "../styles.css";
 import "../theme/variables.css";
+import { collection, addDoc, getDocs } from "firebase/firestore"
+import { db } from "./firebase-config"
 
 // Define a Court interface if you have specific properties for a court
 export interface Court {
@@ -42,7 +44,7 @@ export interface GameFormState {
 	pump: boolean;
 }
 
-const CreatePage3: React.FC = () => {
+const CreatePage4: React.FC = () => {
 	const [formData, setFormData] = useState<GameFormState>({
 		gameName: "",
 		gameDescription: "",
@@ -69,50 +71,35 @@ const CreatePage3: React.FC = () => {
 
 
 	// Below this is fetching data for displaying courts in dropdown
+
 	const [courts, setCourts] = useState<Court[]>([]);
+	const courtsCollectionRef = collection(db, "courts")
 
 	useEffect(() => {
-		const fetchData = async () => {
+		// function to list fetch games object from firebase
+		const getGames = async () => {
 			try {
-				const url = `https://swish-cc699-default-rtdb.europe-west1.firebasedatabase.app/Courts.json`;
-				const response = await fetch(url);
-
-				if (!response.ok) {
-					throw new Error("Network response was not ok");
-				}
-
-				const data = await response.json();
-				const loadedCourts = Object.keys(data).map((key) => ({
-					id: key,
-					...data[key],
-				}));
-				setCourts(loadedCourts);
+				const data = await getDocs(courtsCollectionRef);
+				setCourts(data.docs.map((doc) => ({ ...doc.data() })))
 			} catch (error) {
 				console.error("Error fetching data: ", error);
 			}
 		};
 
-		fetchData();
+		getGames();
 	}, []);
 
 	// sending data to the database using arrow function
 
-	const handleSaveAndCreate = async () => {
-		try {
-			const response = await fetch(
-				"https://swish-cc699-default-rtdb.europe-west1.firebasedatabase.app/games.json",
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify(formData),
-				}
-			);
+	const gamesCollectionRef = collection(db, "games")
 
-			if (!response.ok) {
-				throw new Error("Something went wrong!");
-			}
+	const handleSaveAndCreate = async () => {
+
+		try {
+			const response = await addDoc(gamesCollectionRef, formData);
+			// if (!response.ok) {
+			// 	throw new Error("Something went wrong!");
+			// }
 
 			// If the game is successfully created, reset the form data
 			setFormData({
@@ -125,9 +112,6 @@ const CreatePage3: React.FC = () => {
 				ball: false,
 				pump: false,
 			});
-
-			// Handle the successful response here, like showing a success message
-			console.log("Game created:", await response.json());
 
 			// Optionally, navigate to the search page programmatically if needed
 			// history.push('/search'); // You would need to use useHistory from 'react-router-dom' for this
@@ -259,4 +243,4 @@ const CreatePage3: React.FC = () => {
 	);
 };
 
-export default CreatePage3;
+export default CreatePage4;
