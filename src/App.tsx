@@ -52,6 +52,9 @@ import CreatePage2 from "./pages/CreatePage2";
 import CreatePage3 from "./pages/CreatePage3";
 import GamesList from "./components/GamesList";
 import EditPage from "./pages/EditPage";
+import SearchPageV2 from "./pages/SearchPageV2";
+import CreatePage4 from "./pages/CreatePage4";
+import { SearchInfo } from "./components/CardSearchGame";
 
 setupIonicReact();
 
@@ -72,11 +75,25 @@ const App: React.FC = () => (
 						exact
 						path="/search"
 					>
-						<SearchPage />
+						<SearchPageV2
+							gameName={""}
+							skillLevel={""}
+							gameDescription={""}
+							court={{
+								courtName: "",
+								location: "",
+								courtType: "Indoor",
+								id: "",
+							}}
+							gameSize={0}
+							time={""}
+							ball={false}
+							pump={false}
+						/>
 					</Route>
 					{/* Routing the path of /create to the create page */}
 					<Route path="/create">
-						<CreatePage />
+						<CreatePage4 />
 					</Route>
 					{/* Routing the path of /chats to the chats page */}
 					<Route path="/chats">

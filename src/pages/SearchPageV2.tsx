@@ -14,9 +14,8 @@ import {
 } from "@ionic/react";
 import "./SearchPage.css";
 import CardSearchGame, { SearchInfo } from "../components/CardSearchGame";
-import { db } from "./firebase-config"
-import { collection, getDocs } from "firebase/firestore"
-
+import { db } from "./firebase-config";
+import { collection, getDocs } from "firebase/firestore";
 
 // Samuel, Jarl, Paolo - Paolo created a function which allowed us to list all the items. Samuel put it inside the page and adjusted the code so it works. Jarl started the search and filtering and Samuel finished the functionality.
 
@@ -24,7 +23,7 @@ const SearchPageV2: React.FC<SearchInfo> = () => {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [filter, setFilter] = useState("");
 	const [games, setGames] = useState<SearchInfo[]>([]);
-	const gamesCollectionRef = collection(db, "games")
+	const gamesCollectionRef = collection(db, "games");
 	const [filteredGames, setFilteredGames] = useState<SearchInfo[]>([]);
 
 	useEffect(() => {
@@ -32,7 +31,7 @@ const SearchPageV2: React.FC<SearchInfo> = () => {
 		const getGames = async () => {
 			try {
 				const data = await getDocs(gamesCollectionRef);
-				setGames(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+				setGames(data.docs.map((doc) => ({ ...(doc.data() as SearchInfo), id: doc.id })));
 			} catch (error) {
 				console.error("Error fetching data: ", error);
 			}
@@ -48,7 +47,7 @@ const SearchPageV2: React.FC<SearchInfo> = () => {
 			const gameNameLower = game.gameName ? game.gameName.toLowerCase() : "";
 			return (
 				gameNameLower.includes(searchTerm.toLowerCase()) &&
-				(filter === "" || game.court.gameType === filter)
+				(filter === "" || game.court.courtType === filter)
 			);
 		});
 		setFilteredGames(filtered);
@@ -84,7 +83,7 @@ const SearchPageV2: React.FC<SearchInfo> = () => {
 				{/* mapping through the the filtered games and displaying each game from database */}
 				<IonList>
 					{filteredGames.map((game) => (
-						<CardSearchGame key={game.id} searchInfo={game} />
+						<CardSearchGame searchInfo={game} />
 					))}
 				</IonList>
 			</IonContent>
