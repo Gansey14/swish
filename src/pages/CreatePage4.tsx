@@ -22,8 +22,8 @@ import "./CreatePage2.css";
 import "./CreatePage3.css";
 import "../styles.css";
 import "../theme/variables.css";
-import { collection, addDoc, getDocs } from "firebase/firestore"
-import { db } from "./firebase-config"
+import { collection, addDoc, getDocs } from "firebase/firestore";
+import { db } from "./firebase-config";
 
 // Define a Court interface if you have specific properties for a court
 export interface Court {
@@ -69,11 +69,10 @@ const CreatePage4: React.FC = () => {
 		});
 	};
 
-
 	// Below this is fetching data for displaying courts in dropdown
 
 	const [courts, setCourts] = useState<Court[]>([]);
-	const courtsCollectionRef = collection(db, "courts")
+	const courtsCollectionRef = collection(db, "courts");
 
 	useEffect(() => {
 		// function to list fetch games object from firebase
@@ -91,10 +90,9 @@ const CreatePage4: React.FC = () => {
 
 	// sending data to the database using arrow function
 
-	const gamesCollectionRef = collection(db, "games")
+	const gamesCollectionRef = collection(db, "games");
 
 	const handleSaveAndCreate = async () => {
-
 		try {
 			const response = await addDoc(gamesCollectionRef, formData);
 			// if (!response.ok) {
@@ -165,7 +163,6 @@ const CreatePage4: React.FC = () => {
 					</IonSelect>
 				</IonItem>
 				<IonItem>
-
 					{/* fetching data from database to display courts in a dropdown which user can select afterwards */}
 					<IonLabel position="stacked">Court</IonLabel>
 					<IonSelect
@@ -210,8 +207,11 @@ const CreatePage4: React.FC = () => {
 
 				<div className="timeAndEquipment">
 					<div className="timepickerContainer">
-						<strong className='timepickerStrong'>Select a date and time</strong>
-						<IonDatetime value={formData.time} onIonChange={e => handleInputChange('time', e.detail.value!)}></IonDatetime>
+						<strong className="timepickerStrong">Select a date and time</strong>
+						<IonDatetime
+							value={formData.time}
+							onIonChange={(e) => handleInputChange("time", e.detail.value!)}
+						></IonDatetime>
 
 						{/* this date picker is not showing up. It seems that it is because of the value in IonDateTime */}
 
@@ -223,20 +223,35 @@ const CreatePage4: React.FC = () => {
 					<div>
 						<div className="text">
 							<strong>Equipment</strong>
-							<p>Check off equipment you have. Players who join your game will have the same option</p>
+							<p>
+								Check off equipment you have. Players who join your game will have the
+								same option
+							</p>
 						</div>
 						<IonItem>
 							<IonLabel>Ball</IonLabel>
-							<IonCheckbox checked={formData.ball} onIonChange={() => handleCheckboxChange('ball')} />
+							<IonCheckbox
+								checked={formData.ball}
+								onIonChange={() => handleCheckboxChange("ball")}
+							/>
 						</IonItem>
 						<IonItem>
 							<IonLabel>Pump</IonLabel>
-							<IonCheckbox checked={formData.pump} onIonChange={() => handleCheckboxChange('pump')} />
+							<IonCheckbox
+								checked={formData.pump}
+								onIonChange={() => handleCheckboxChange("pump")}
+							/>
 						</IonItem>
 					</div>
 				</div>
 			</IonContent>
-			<IonButton className="ion-padding" expand="block" slot="end" onClick={handleSaveAndCreate} routerLink="/search">
+			<IonButton
+				className="ion-padding"
+				expand="block"
+				slot="end"
+				onClick={handleSaveAndCreate}
+				routerLink="/search"
+			>
 				Save and Create
 			</IonButton>
 		</IonPage>
