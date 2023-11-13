@@ -77,16 +77,16 @@ const CreatePage4: React.FC = () => {
 
 	useEffect(() => {
 		// function to list fetch games object from firebase
-		const getGames = async () => {
+		const getCourts = async () => {
 			try {
 				const data = await getDocs(courtsCollectionRef);
-				setCourts(data.docs.map((doc) => ({ ...doc.data() })))
+				setCourts(data.docs.map((doc) => ({ ...doc.data() as Court })))
 			} catch (error) {
 				console.error("Error fetching data: ", error);
 			}
 		};
 
-		getGames();
+		getCourts();
 	}, []);
 
 	// sending data to the database using arrow function

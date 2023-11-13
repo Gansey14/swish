@@ -76,6 +76,7 @@ const App: React.FC = () => (
 						path="/search"
 					>
 						<SearchPageV2
+							id={""}
 							gameName={""}
 							skillLevel={""}
 							gameDescription={""}

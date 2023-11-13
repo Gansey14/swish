@@ -83,7 +83,7 @@ const SearchPageV2: React.FC<SearchInfo> = () => {
 				{/* mapping through the the filtered games and displaying each game from database */}
 				<IonList>
 					{filteredGames.map((game) => (
-						<CardSearchGame searchInfo={game} />
+						<CardSearchGame searchInfo={game} key={game.id} />
 					))}
 				</IonList>
 			</IonContent>

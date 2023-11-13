@@ -21,122 +21,84 @@ import {
 } from "@ionic/react";
 import { useHistory } from "react-router-dom";
 import { trashBinOutline } from "ionicons/icons";
-
-export interface Court {
-	id: string;
-	courtImage: string;
-	gameType: string;
-	location: string;
-	courtName: string;
-	courtType: string;
-}
-
-interface GameState {
-	id: string;
-	gameName: string;
-	gameDescription: string;
-	skillLevel: string;
-	gameSize: string;
-	court: Court | null;
-	availableSpots: number;
-	time: string;
-	equipment: {
-		ball: boolean;
-		pump: boolean;
-	};
-}
+import { Court } from "./CreatePage4";
+import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore"
+import { db } from "./firebase-config"
+import { SearchInfo } from "../components/CardSearchGame";
 
 const EditPage: React.FC = () => {
 	const history = useHistory();
-	const [game, setGame] = useState<GameState>({
+	const [game, setGame] = useState<SearchInfo>({
 		id: "",
 		gameName: "",
 		gameDescription: "",
 		skillLevel: "",
-		gameSize: "",
-		court: null,
-		availableSpots: 10,
+		gameSize: 10,
+		court: {
+			id: "",
+			courtName: "",
+			courtType: "Outdoor",
+			location: "",
+		}, // Use the Court interface here
 		time: "",
-		equipment: {
-			ball: true,
-			pump: true,
-		},
+		ball: false,
+		pump: false,
 	});
+
+	// fetching courts for dropdown
+
 	const [courts, setCourts] = useState<Court[]>([]);
+	const courtsCollectionRef = collection(db, "courts")
 
 	useEffect(() => {
-		const fetchData = async () => {
+		// function to list fetch games object from firebase
+		const getCourts = async () => {
 			try {
-				const url = `https://swish-cc699-default-rtdb.europe-west1.firebasedatabase.app/Courts.json`;
-				const response = await fetch(url);
-
-				if (!response.ok) {
-					throw new Error("Network response was not ok");
-				}
-
-				const data = await response.json();
-				const loadedCourts = Object.keys(data).map((key) => ({
-					id: key,
-					...data[key],
-				}));
-				setCourts(loadedCourts);
+				const data = await getDocs(courtsCollectionRef);
+				setCourts(data.docs.map((doc) => ({ ...doc.data() as Court })))
 			} catch (error) {
 				console.error("Error fetching data: ", error);
 			}
 		};
-
-		fetchData();
+		getCourts();
 	}, []);
 
-	const handleInputChange = (name: keyof GameState, value: any) => {
+	// updating inputs and checkboxes
+
+	const handleInputChange = (name: keyof SearchInfo, value: any) => {
 		setGame({ ...game, [name]: value });
 	};
 
-	const handleCheckboxChange = (name: keyof GameState["equipment"]) => {
+	const handleCheckboxChange = (name: "ball" | "pump") => {
 		setGame({
 			...game,
-			equipment: { ...game.equipment, [name]: !game.equipment[name] },
+			[name]: !game[name],
 		});
 	};
 
+	// updating games
+
 	const handleUpdate = async () => {
-		const url = `https://swish-cc699-default-rtdb.europe-west1.firebasedatabase.app/games/${game.id}.json`;
-		try {
-			const response = await fetch(url, {
-				method: "PATCH",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(game),
-			});
-
-			if (!response.ok) {
-				throw new Error("Failed to update game");
-			}
-
-			console.log("Game Updated", game);
-			history.push("/search"); // Redirect to another page after updating
-		} catch (error) {
-			console.error("Error updating game", error);
-		}
+		const gameRef = doc(db, 'games', game.id);
+		await updateDoc(gameRef, {
+			gameName: game.gameName,
+			gameDescription: game.gameDescription,
+			skillLevel: game.skillLevel,
+			gameSize: game.gameSize,
+			court: game.court,
+			time: game.time,
+			ball: game.ball,
+			pump: game.pump
+		});
+		history.push('/search');
 	};
 
+	// deleting games
+
 	const handleDelete = async () => {
-		const url = `https://swish-cc699-default-rtdb.europe-west1.firebasedatabase.app/games/${game.id}.json`;
-		try {
-			const response = await fetch(url, {
-				method: "DELETE",
-			});
-
-			if (!response.ok) {
-				throw new Error("Failed to delete game");
-			}
-
-			console.log("Game Deleted", game);
-			history.push("/search"); // Redirect to another page after deleting
-		} catch (error) {
-			console.error("Error deleting game", error);
-		}
+		const gameRef = doc(db, 'games', game.id);
+		await deleteDoc(gameRef);
+		history.push('/search');
 	};
 
 	return (
@@ -230,14 +192,14 @@ const EditPage: React.FC = () => {
 						<IonItem>
 							<IonLabel>Ball</IonLabel>
 							<IonCheckbox
-								checked={game.equipment.ball}
+								checked={game.ball}
 								onIonChange={() => handleCheckboxChange('ball')}
 							/>
 						</IonItem>
 						<IonItem>
 							<IonLabel>Pump</IonLabel>
 							<IonCheckbox
-								checked={game.equipment.pump}
+								checked={game.pump}
 								onIonChange={() => handleCheckboxChange('pump')}
 							/>
 						</IonItem>
@@ -252,3 +214,4 @@ const EditPage: React.FC = () => {
 };
 
 export default EditPage;
+

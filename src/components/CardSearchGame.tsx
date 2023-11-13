@@ -19,6 +19,7 @@ import { db } from "../pages/firebase-config";
 import { collection, getDocs } from "firebase/firestore";
 
 export type SearchInfo = {
+	id: string;
 	gameName: string;
 	skillLevel: string;
 	gameDescription: string;
@@ -41,9 +42,11 @@ type CardSearchGameProps = {
 const CardSearchGame: React.FC<CardSearchGameProps> = ({ searchInfo }) => {
 	const history = useHistory();
 
-	// const navigateToGameDetails = () => {
-	// 	history.push(`/editpage/${searchInfo.id}`);
-	// };
+	const navigateToGameDetails = () => {
+		history.push(`/games/${searchInfo.id}`);
+
+	};
+
 	return (
 		<IonCard className="ion-card-click">
 			<IonCardContent>
@@ -108,7 +111,8 @@ const CardSearchGame: React.FC<CardSearchGameProps> = ({ searchInfo }) => {
 					<IonButton
 						className="buttons-split"
 						fill="outline"
-						// onClick={navigateToGameDetails}
+						onClick={navigateToGameDetails}
+						key={searchInfo.id}
 					>
 						Edit Game
 					</IonButton>
