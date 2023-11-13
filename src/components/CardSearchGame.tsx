@@ -15,15 +15,17 @@ import {
 	IonButton,
 } from "@ionic/react";
 import { peopleOutline, pinOutline, timeOutline } from "ionicons/icons";
+import { db } from "../pages/firebase-config";
+import { collection, getDocs } from "firebase/firestore";
 
 export type SearchInfo = {
-	id: string;
 	gameName: string;
 	skillLevel: string;
 	gameDescription: string;
-	court: null | {
+	court: {
+		courtName: string;
 		location: string;
-		gameType: "Indoor" | "Outdoor";
+		courtType: "Indoor" | "Outdoor";
 		id: string;
 	};
 	gameSize: number;
@@ -39,15 +41,11 @@ type CardSearchGameProps = {
 const CardSearchGame: React.FC<CardSearchGameProps> = ({ searchInfo }) => {
 	const history = useHistory();
 
-	const numberOfPeople = searchInfo.gameSize;
-	const navigateToGameDetails = () => {
-		history.push(`/editpage/${searchInfo.id}`);
-	};
+	// const navigateToGameDetails = () => {
+	// 	history.push(`/editpage/${searchInfo.id}`);
+	// };
 	return (
-		<IonCard
-			className="ion-card-click"
-			key={searchInfo.id}
-		>
+		<IonCard className="ion-card-click">
 			<IonCardContent>
 				<IonItem
 					className="tag-container no-margin"
@@ -58,7 +56,7 @@ const CardSearchGame: React.FC<CardSearchGameProps> = ({ searchInfo }) => {
 						color="secondary"
 						outline={true}
 					>
-						{searchInfo.court && searchInfo.court.gameType}
+						{searchInfo.court && searchInfo.court.courtType}
 					</IonChip>
 					<IonChip
 						className="custom-chip"
@@ -79,7 +77,7 @@ const CardSearchGame: React.FC<CardSearchGameProps> = ({ searchInfo }) => {
 							aria-hidden="true"
 							icon={peopleOutline}
 						/>
-						{`${numberOfPeople}`}
+						{searchInfo.gameSize}
 					</IonChip>
 				</IonItem>
 
@@ -110,7 +108,7 @@ const CardSearchGame: React.FC<CardSearchGameProps> = ({ searchInfo }) => {
 					<IonButton
 						className="buttons-split"
 						fill="outline"
-						onClick={navigateToGameDetails}
+						// onClick={navigateToGameDetails}
 					>
 						Edit Game
 					</IonButton>
