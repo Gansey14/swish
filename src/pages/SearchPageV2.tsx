@@ -14,53 +14,32 @@ import {
 } from "@ionic/react";
 import "./SearchPage.css";
 import CardSearchGame from "../components/CardSearchGame";
+import SearchInfo from "../components/CardSearchGame"
+import { db } from "./firebase-config"
+import { collection getDocs } from "firebase/firestore"
 
-export type SearchInfo = {
-	id: string;
-	gameName: string;
-	skillLevel: string;
-	gameDescription: string;
-	court: {
-		courtImage: string;
-		location: string;
-		gameType: "Indoor" | "Outdoor";
-		id: string;
-	};
-	gameSize: string;
-	availableSpots: number;
-	time: string;
-};
+
 // Samuel, Jarl, Paolo - Paolo created a function which allowed us to list all the items. Samuel put it inside the page and adjusted the code so it works. Jarl started the search and filtering and Samuel finished the functionality.
 
-const SearchPage: React.FC = () => {
+const SearchPageV2: React.FC = () => {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [filter, setFilter] = useState("");
-	const [games, setGames] = useState<SearchInfo[]>([]);
-	const [filteredGames, setFilteredGames] = useState<SearchInfo[]>([]);
+	const [games, setGames] = useState([]);
+	const gamesCollectionRef = collection(db, "games")
+	const [filteredGames, setFilteredGames] = useState([]);
 
 	useEffect(() => {
 		// function to list fetch games object from firebase
-		const fetchData = async () => {
+		const getGames = async () => {
 			try {
-				const url = `https://swish-cc699-default-rtdb.europe-west1.firebasedatabase.app/games.json`;
-				const response = await fetch(url);
-
-				if (!response.ok) {
-					throw new Error("Network response was not ok");
-				}
-
-				const data = await response.json();
-				const loadedGames = Object.keys(data).map((key) => ({
-					id: key,
-					...data[key],
-				}));
-				setGames(loadedGames);
+				const data = await getDocks(usersCollectionRef);
+				setGames(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
 			} catch (error) {
 				console.error("Error fetching data: ", error);
 			}
 		};
 
-		fetchData();
+		getGames();
 	}, []);
 
 	// implementing filtering option with the help of chatGPT
@@ -114,4 +93,4 @@ const SearchPage: React.FC = () => {
 	);
 };
 
-export default SearchPage;
+export default SearchPageV2;

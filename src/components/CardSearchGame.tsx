@@ -22,13 +22,11 @@ export type SearchInfo = {
 	skillLevel: string;
 	gameDescription: string;
 	court: {
-		courtImage: string;
 		location: string;
 		gameType: "Indoor" | "Outdoor";
 		id: string;
 	};
-	gameSize: string;
-	availableSpots: number;
+	gameSize: number;
 	time: string;
 };
 
@@ -39,7 +37,7 @@ type CardSearchGameProps = {
 const CardSearchGame: React.FC<CardSearchGameProps> = ({ searchInfo }) => {
 	const history = useHistory();
 
-	const numberOfPeople = searchInfo.availableSpots;
+	const numberOfPeople = searchInfo.gameSize;
 	const navigateToGameDetails = () => {
 		history.push(`/editpage/${searchInfo.id}`);
 	};
