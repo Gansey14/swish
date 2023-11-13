@@ -23,9 +23,9 @@ import { collection, getDocs } from "firebase/firestore"
 const SearchPageV2: React.FC<SearchInfo> = () => {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [filter, setFilter] = useState("");
-	const [games, setGames] = useState([]);
+	const [games, setGames] = useState<SearchInfo[]>([]);
 	const gamesCollectionRef = collection(db, "games")
-	const [filteredGames, setFilteredGames] = useState([]);
+	const [filteredGames, setFilteredGames] = useState<SearchInfo[]>([]);
 
 	useEffect(() => {
 		// function to list fetch games object from firebase

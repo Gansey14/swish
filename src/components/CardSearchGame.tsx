@@ -21,13 +21,15 @@ export type SearchInfo = {
 	gameName: string;
 	skillLevel: string;
 	gameDescription: string;
-	court: {
+	court: null | {
 		location: string;
 		gameType: "Indoor" | "Outdoor";
 		id: string;
 	};
 	gameSize: number;
 	time: string;
+	ball: boolean;
+	pump: boolean;
 };
 
 type CardSearchGameProps = {

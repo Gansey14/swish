@@ -16,7 +16,7 @@ import "./SearchPage.css";
 import CardSearchGame from "../components/CardSearchGame";
 
 export type SearchInfo = {
-	id: string;
+	// id: string;
 	gameName: string;
 	skillLevel: string;
 	gameDescription: string;
