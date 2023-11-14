@@ -13,54 +13,31 @@ import {
 	IonList,
 } from "@ionic/react";
 import "./SearchPage.css";
-import CardSearchGame from "../components/CardSearchGame";
+import CardSearchGame, { SearchInfo } from "../components/CardSearchGame";
+import { db } from "../firebase-config";
+import { collection, getDocs } from "firebase/firestore";
 
-export type SearchInfo = {
-	// id: string;
-	gameName: string;
-	skillLevel: string;
-	gameDescription: string;
-	court: {
-		courtImage: string;
-		location: string;
-		gameType: "Indoor" | "Outdoor";
-		id: string;
-	};
-	gameSize: string;
-	availableSpots: number;
-	time: string;
-};
 // Samuel, Jarl, Paolo - Paolo created a function which allowed us to list all the items. Samuel put it inside the page and adjusted the code so it works. Jarl started the search and filtering and Samuel finished the functionality.
 
-const SearchPage: React.FC = () => {
+const SearchPageV2: React.FC<SearchInfo> = () => {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [filter, setFilter] = useState("");
 	const [games, setGames] = useState<SearchInfo[]>([]);
+	const gamesCollectionRef = collection(db, "games");
 	const [filteredGames, setFilteredGames] = useState<SearchInfo[]>([]);
 
 	useEffect(() => {
 		// function to list fetch games object from firebase
-		const fetchData = async () => {
+		const getGames = async () => {
 			try {
-				const url = `https://swish-cc699-default-rtdb.europe-west1.firebasedatabase.app/games.json`;
-				const response = await fetch(url);
-
-				if (!response.ok) {
-					throw new Error("Network response was not ok");
-				}
-
-				const data = await response.json();
-				const loadedGames = Object.keys(data).map((key) => ({
-					id: key,
-					...data[key],
-				}));
-				setGames(loadedGames);
+				const data = await getDocs(gamesCollectionRef);
+				setGames(data.docs.map((doc) => ({ ...(doc.data() as SearchInfo), id: doc.id })));
 			} catch (error) {
 				console.error("Error fetching data: ", error);
 			}
 		};
 
-		fetchData();
+		getGames();
 	}, []);
 
 	// implementing filtering option with the help of chatGPT
@@ -70,7 +47,7 @@ const SearchPage: React.FC = () => {
 			const gameNameLower = game.gameName ? game.gameName.toLowerCase() : "";
 			return (
 				gameNameLower.includes(searchTerm.toLowerCase()) &&
-				(filter === "" || game.court.gameType === filter)
+				(filter === "" || game.court.courtType === filter)
 			);
 		});
 		setFilteredGames(filtered);
@@ -106,7 +83,10 @@ const SearchPage: React.FC = () => {
 				{/* mapping through the the filtered games and displaying each game from database */}
 				<IonList>
 					{filteredGames.map((game) => (
-						<CardSearchGame key={game.id} searchInfo={game} />
+						<CardSearchGame
+							searchInfo={game}
+							key={game.id}
+						/>
 					))}
 				</IonList>
 			</IonContent>
@@ -114,4 +94,4 @@ const SearchPage: React.FC = () => {
 	);
 };
 
-export default SearchPage;
+export default SearchPageV2;

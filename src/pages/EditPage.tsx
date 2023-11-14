@@ -31,7 +31,7 @@ import {
 	deleteDoc,
 	getDoc,
 } from "firebase/firestore";
-import { db } from "./firebase-config";
+import { db } from "../firebase-config";
 import { SearchInfo } from "../components/CardSearchGame";
 
 type gameId = {

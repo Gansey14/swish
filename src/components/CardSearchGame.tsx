@@ -15,7 +15,7 @@ import {
 	IonButton,
 } from "@ionic/react";
 import { peopleOutline, pinOutline, timeOutline } from "ionicons/icons";
-import { db } from "../pages/firebase-config";
+import { db } from "../firebase-config";
 import { collection, getDocs } from "firebase/firestore";
 
 export type SearchInfo = {
@@ -44,7 +44,6 @@ const CardSearchGame: React.FC<CardSearchGameProps> = ({ searchInfo }) => {
 
 	const navigateToGameDetails = () => {
 		history.push(`/games/${searchInfo.id}`);
-
 	};
 
 	return (
