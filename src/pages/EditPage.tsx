@@ -163,27 +163,7 @@ const EditPage: React.FC = () => {
 				<main>
 					<form onSubmit={(e) => e.preventDefault()}>
 						{/* Court Selection Dropdown */}
-						<IonItem>
-							<IonLabel position="stacked">Court</IonLabel>
-							<IonSelect
-								value={game.court?.id}
-								onIonChange={(e) =>
-									handleInputChange(
-										"court",
-										courts.find((court) => court.id === e.detail.value)
-									)
-								}
-							>
-								{courts.map((court) => (
-									<IonSelectOption
-										key={court.id}
-										value={court.id}
-									>
-										{court.courtName}
-									</IonSelectOption>
-								))}
-							</IonSelect>
-						</IonItem>
+
 						<IonItem>
 							<IonLabel position="stacked">Name of your game</IonLabel>
 							<IonTextarea
@@ -212,6 +192,27 @@ const EditPage: React.FC = () => {
 								<IonSelectOption value="Casual">Casual</IonSelectOption>
 								<IonSelectOption value="Skilled">Skilled</IonSelectOption>
 								<IonSelectOption value="Experienced">Experienced</IonSelectOption>
+							</IonSelect>
+						</IonItem>
+						<IonItem>
+							<IonLabel position="stacked">Court</IonLabel>
+							<IonSelect
+								value={game.court?.id}
+								onIonChange={(e) =>
+									handleInputChange(
+										"court",
+										courts.find((court) => court.id === e.detail.value)
+									)
+								}
+							>
+								{courts.map((court) => (
+									<IonSelectOption
+										key={court.id}
+										value={court.id}
+									>
+										{court.courtName}
+									</IonSelectOption>
+								))}
 							</IonSelect>
 						</IonItem>
 						<IonItem>
