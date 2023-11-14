@@ -17,18 +17,26 @@ import {
 	IonSelectOption,
 	IonDatetime,
 	IonCheckbox,
-	IonLabel
+	IonLabel,
 } from "@ionic/react";
 import { useHistory, useParams } from "react-router-dom";
 import { trashBinOutline } from "ionicons/icons";
 import { Court } from "./CreatePage4";
-import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore"
-import { db } from "./firebase-config"
+import {
+	collection,
+	addDoc,
+	getDocs,
+	doc,
+	updateDoc,
+	deleteDoc,
+	getDoc,
+} from "firebase/firestore";
+import { db } from "./firebase-config";
 import { SearchInfo } from "../components/CardSearchGame";
 
 type gameId = {
 	gameId: string;
-}
+};
 
 const EditPage: React.FC = () => {
 	const params = useParams<gameId>();
@@ -50,21 +58,38 @@ const EditPage: React.FC = () => {
 		pump: false,
 	});
 
+	// fetching game to populate input fields
 	// fetching courts for dropdown
-
+	const specificGameRef = doc(db, "games", params.gameId);
 	const [courts, setCourts] = useState<Court[]>([]);
-	const courtsCollectionRef = collection(db, "courts")
+	const courtsCollectionRef = collection(db, "courts");
 
 	useEffect(() => {
+		// function to fetch specific game info
+		const getGame = async () => {
+			try {
+				const gameDoc = await getDoc(specificGameRef);
+				if (gameDoc.exists()) {
+					const gameData = gameDoc.data() as SearchInfo;
+					setGame(gameData);
+				} else {
+					console.error("No game was found");
+				}
+			} catch (error) {
+				console.error("There was an error fetching the game data", error);
+			}
+		};
+
 		// function to list fetch games object from firebase
 		const getCourts = async () => {
 			try {
 				const data = await getDocs(courtsCollectionRef);
-				setCourts(data.docs.map((doc) => ({ ...doc.data() as Court })))
+				setCourts(data.docs.map((doc) => ({ ...(doc.data() as Court) })));
 			} catch (error) {
 				console.error("Error fetching data: ", error);
 			}
 		};
+		getGame();
 		getCourts();
 	}, []);
 
@@ -84,7 +109,7 @@ const EditPage: React.FC = () => {
 	// updating games
 
 	const handleUpdate = async () => {
-		const gameRef = doc(db, 'games', params.gameId);
+		const gameRef = doc(db, "games", params.gameId);
 		await updateDoc(gameRef, {
 			gameName: game.gameName,
 			gameDescription: game.gameDescription,
@@ -93,17 +118,17 @@ const EditPage: React.FC = () => {
 			court: game.court,
 			time: game.time,
 			ball: game.ball,
-			pump: game.pump
+			pump: game.pump,
 		});
-		history.push('/search');
+		history.push("/search");
 	};
 
 	// deleting games
 
 	const handleDelete = async () => {
-		const gameRef = doc(db, 'games', params.gameId);
+		const gameRef = doc(db, "games", params.gameId);
 		await deleteDoc(gameRef);
-		history.push('/search');
+		history.push("/search");
 	};
 
 	return (
@@ -114,17 +139,29 @@ const EditPage: React.FC = () => {
 						<IonBackButton defaultHref="#"></IonBackButton>
 					</IonButtons>
 					<IonTitle>Edit Game</IonTitle>
-					<div className="progressBar ion-padding-end" slot="end">
-						<IonButton fill="clear" size="small" onClick={handleDelete}>
-							<IonIcon aria-hidden="true" icon={trashBinOutline}></IonIcon>
+					<div
+						className="progressBar ion-padding-end"
+						slot="end"
+					>
+						<IonButton
+							fill="clear"
+							size="small"
+							onClick={handleDelete}
+						>
+							<IonIcon
+								aria-hidden="true"
+								icon={trashBinOutline}
+							></IonIcon>
 						</IonButton>
 					</div>
 				</IonToolbar>
 			</IonHeader>
-			<IonContent fullscreen className="ion-padding">
+			<IonContent
+				fullscreen
+				className="ion-padding"
+			>
 				<main>
 					<form onSubmit={(e) => e.preventDefault()}>
-
 						{/* Court Selection Dropdown */}
 						<IonItem>
 							<IonLabel position="stacked">Court</IonLabel>
@@ -138,7 +175,10 @@ const EditPage: React.FC = () => {
 								}
 							>
 								{courts.map((court) => (
-									<IonSelectOption key={court.id} value={court.id}>
+									<IonSelectOption
+										key={court.id}
+										value={court.id}
+									>
 										{court.courtName}
 									</IonSelectOption>
 								))}
@@ -191,27 +231,32 @@ const EditPage: React.FC = () => {
 							<IonLabel>Date and Time</IonLabel>
 							<IonDatetime
 								value={game.time}
-								onIonChange={(e) => handleInputChange('time', e.detail.value!)}
+								onIonChange={(e) => handleInputChange("time", e.detail.value!)}
 							></IonDatetime>
 						</IonItem>
 						<IonItem>
 							<IonLabel>Ball</IonLabel>
 							<IonCheckbox
 								checked={game.ball}
-								onIonChange={() => handleCheckboxChange('ball')}
+								onIonChange={() => handleCheckboxChange("ball")}
 							/>
 						</IonItem>
 						<IonItem>
 							<IonLabel>Pump</IonLabel>
 							<IonCheckbox
 								checked={game.pump}
-								onIonChange={() => handleCheckboxChange('pump')}
+								onIonChange={() => handleCheckboxChange("pump")}
 							/>
 						</IonItem>
 					</form>
 				</main>
 			</IonContent>
-			<IonButton expand="block" className="ion-padding" slot="end" onClick={handleUpdate}>
+			<IonButton
+				expand="block"
+				className="ion-padding"
+				slot="end"
+				onClick={handleUpdate}
+			>
 				Save and Update
 			</IonButton>
 		</IonPage>
@@ -219,4 +264,3 @@ const EditPage: React.FC = () => {
 };
 
 export default EditPage;
-
