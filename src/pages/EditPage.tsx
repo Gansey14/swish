@@ -19,14 +19,19 @@ import {
 	IonCheckbox,
 	IonLabel
 } from "@ionic/react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { trashBinOutline } from "ionicons/icons";
 import { Court } from "./CreatePage4";
 import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "firebase/firestore"
 import { db } from "./firebase-config"
 import { SearchInfo } from "../components/CardSearchGame";
 
+type gameId = {
+	gameId: string;
+}
+
 const EditPage: React.FC = () => {
+	const params = useParams<gameId>();
 	const history = useHistory();
 	const [game, setGame] = useState<SearchInfo>({
 		id: "",
@@ -79,7 +84,7 @@ const EditPage: React.FC = () => {
 	// updating games
 
 	const handleUpdate = async () => {
-		const gameRef = doc(db, 'games', game.id);
+		const gameRef = doc(db, 'games', params.gameId);
 		await updateDoc(gameRef, {
 			gameName: game.gameName,
 			gameDescription: game.gameDescription,
@@ -96,7 +101,7 @@ const EditPage: React.FC = () => {
 	// deleting games
 
 	const handleDelete = async () => {
-		const gameRef = doc(db, 'games', game.id);
+		const gameRef = doc(db, 'games', params.gameId);
 		await deleteDoc(gameRef);
 		history.push('/search');
 	};
@@ -175,11 +180,11 @@ const EditPage: React.FC = () => {
 								value={game.gameSize}
 								onIonChange={(e) => handleInputChange("gameSize", e.detail.value)}
 							>
-								<IonSelectOption value="1 vs 1">1 vs 1</IonSelectOption>
-								<IonSelectOption value="2 vs 2">2 vs 2</IonSelectOption>
-								<IonSelectOption value="3 vs 3">3 vs 3</IonSelectOption>
-								<IonSelectOption value="4 vs 4">4 vs 4</IonSelectOption>
-								<IonSelectOption value="5 vs 5">5 vs 5</IonSelectOption>
+								<IonSelectOption value="2">1 vs 1</IonSelectOption>
+								<IonSelectOption value="4">2 vs 2</IonSelectOption>
+								<IonSelectOption value="6">3 vs 3</IonSelectOption>
+								<IonSelectOption value="8">4 vs 4</IonSelectOption>
+								<IonSelectOption value="10">5 vs 5</IonSelectOption>
 							</IonSelect>
 						</IonItem>
 						<IonItem>
