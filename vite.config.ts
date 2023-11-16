@@ -7,7 +7,7 @@ import { VitePWA } from "vite-plugin-pwa";
 export default defineConfig(({ command }) => {
 	const config = {
 		plugins: [react(), legacy(), VitePWA({ registerType: "autoUpdate" })],
-		base: "/home",
+		base: "/",
 	};
 
 	if (command !== "serve") {
