@@ -67,7 +67,6 @@ const CardSearchGame: React.FC<CardSearchGameProps> = ({ searchInfo }) => {
 					>
 						{searchInfo.skillLevel}
 					</IonChip>
-
 					<IonChip
 						className="custom-chip"
 						color="secondary"
@@ -82,11 +81,9 @@ const CardSearchGame: React.FC<CardSearchGameProps> = ({ searchInfo }) => {
 						{searchInfo.gameSize}
 					</IonChip>
 				</IonItem>
-
 				<IonItem lines="full">
 					<IonCardTitle>{searchInfo.gameName}</IonCardTitle>
 				</IonItem>
-
 				<IonItem lines="none">
 					<IonIcon
 						className="label-icon"
