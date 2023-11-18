@@ -14,7 +14,7 @@ import {
 } from "@ionic/react";
 import "./SearchPage.css";
 import CardSearchGame, { SearchInfo } from "../components/CardSearchGame";
-import { db } from "./firebase-config";
+import { db } from "../firebase-config";
 import { collection, getDocs, onSnapshot } from "firebase/firestore";
 
 // Samuel, Jarl, Paolo - Paolo created a function which allowed us to list all the items. Samuel put it inside the page and adjusted the code so it works. Jarl started the search and filtering and Samuel finished the functionality.

@@ -23,7 +23,7 @@ import "./CreatePage2.css";
 import "../styles.css";
 import "../theme/variables.css";
 import { collection, addDoc, getDocs } from "firebase/firestore";
-import { db } from "./firebase-config";
+import { db } from "../firebase-config";
 import { useHistory } from "react-router";
 
 // Define a Court interface if you have specific properties for a court
