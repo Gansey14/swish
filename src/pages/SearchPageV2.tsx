@@ -15,7 +15,7 @@ import {
 import "./SearchPage.css";
 import CardSearchGame, { SearchInfo } from "../components/CardSearchGame";
 import { db } from "./firebase-config";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, onSnapshot } from "firebase/firestore";
 
 // Samuel, Jarl, Paolo - Paolo created a function which allowed us to list all the items. Samuel put it inside the page and adjusted the code so it works. Jarl started the search and filtering and Samuel finished the functionality.
 
@@ -27,17 +27,19 @@ const SearchPageV2: React.FC<SearchInfo> = () => {
 	const [filteredGames, setFilteredGames] = useState<SearchInfo[]>([]);
 
 	useEffect(() => {
-		// function to list fetch games object from firebase
-		const getGames = async () => {
-			try {
-				const data = await getDocs(gamesCollectionRef);
-				setGames(data.docs.map((doc) => ({ ...(doc.data() as SearchInfo), id: doc.id })));
-			} catch (error) {
-				console.error("Error fetching data: ", error);
-			}
-		};
+		// Subscribe to real-time updates from Firestore
+		const unsubscribe = onSnapshot(gamesCollectionRef, (snapshot) => {
+			const updatedGames = snapshot.docs.map(doc => ({
+				...(doc.data() as SearchInfo),
+				id: doc.id,
+			}));
+			setGames(updatedGames);
+		}, (error) => {
+			console.error("Error fetching real-time data: ", error);
+		});
 
-		getGames();
+		// Cleanup function to unsubscribe from the listener when the component unmounts
+		return () => unsubscribe();
 	}, []);
 
 	// implementing filtering option with the help of chatGPT
