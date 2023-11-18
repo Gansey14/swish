@@ -40,21 +40,14 @@ import "./styles.css";
 
 /* Pages */
 import HomePage from "./pages/HomePage";
-import SearchPage from "./pages/SearchPage";
-import CreatePage from "./pages/CreatePage";
 import ChatsPage from "./pages/ChatsPage";
 import ProfilePage from "./pages/ProfilePage";
 import DisclaimerPage from "./pages/DisclaimerPage";
 import DisclaimerBookingPage from "./pages/DisclaimerBookingPage";
-import GameDetailsPage from "./pages/GameDetailsPage";
-import { GameInfo } from "../src/components/CardNextGame";
-import CreatePage2 from "./pages/CreatePage2";
-import CreatePage3 from "./pages/CreatePage3";
 import GamesList from "./components/GamesList";
 import EditPage from "./pages/EditPage";
-import SearchPageV2 from "./pages/SearchPageV2";
 import CreatePage4 from "./pages/CreatePage4";
-import { SearchInfo } from "./components/CardSearchGame";
+import SearchPage from "./pages/SearchPage";
 
 setupIonicReact();
 
@@ -75,7 +68,7 @@ const App: React.FC = () => (
 						exact
 						path="/search"
 					>
-						<SearchPageV2
+						<SearchPage
 							id={""}
 							gameName={""}
 							skillLevel={""}
@@ -138,7 +131,7 @@ const App: React.FC = () => (
 						exact
 						path="/"
 					>
-						<Redirect to="/home" />
+						<Redirect to="/search" />
 					</Route>
 				</IonRouterOutlet>
 				<IonTabBar slot="bottom">

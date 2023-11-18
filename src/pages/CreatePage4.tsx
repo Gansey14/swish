@@ -20,7 +20,6 @@ import {
 } from "@ionic/react";
 import React, { useState, useEffect } from "react";
 import "./CreatePage2.css";
-import "./CreatePage3.css";
 import "../styles.css";
 import "../theme/variables.css";
 import { collection, addDoc, getDocs } from "firebase/firestore";
@@ -83,7 +82,7 @@ const CreatePage4: React.FC = () => {
 		const getCourts = async () => {
 			try {
 				const data = await getDocs(courtsCollectionRef);
-				setCourts(data.docs.map((doc) => ({ ...doc.data() as Court })))
+				setCourts(data.docs.map((doc) => ({ ...(doc.data() as Court) })));
 			} catch (error) {
 				console.error("Error fetching data: ", error);
 			}
