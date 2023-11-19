@@ -1,4 +1,4 @@
-import { Redirect, Route } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import {
 	IonApp,
 	IonIcon,
@@ -17,15 +17,15 @@ import {
 	personOutline,
 	searchOutline,
 } from "ionicons/icons";
+import { useEffect, useState } from 'react';
+import { auth } from './firebase-config';
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
-
 /* Basic CSS for apps built with Ionic */
 import "@ionic/react/css/normalize.css";
 import "@ionic/react/css/structure.css";
 import "@ionic/react/css/typography.css";
-
 /* Optional CSS utils that can be commented out */
 import "@ionic/react/css/padding.css";
 import "@ionic/react/css/float-elements.css";
@@ -33,7 +33,6 @@ import "@ionic/react/css/text-alignment.css";
 import "@ionic/react/css/text-transformation.css";
 import "@ionic/react/css/flex-utils.css";
 import "@ionic/react/css/display.css";
-
 /* Theme variables */
 import "./theme/variables.css";
 import "./styles.css";
@@ -48,147 +47,71 @@ import GamesList from "./components/GamesList";
 import EditPage from "./pages/EditPage";
 import CreatePage4 from "./pages/CreatePage4";
 import SearchPage from "./pages/SearchPage";
+import LogIn from "./pages/LogIn";
 
 setupIonicReact();
 
-const App: React.FC = () => (
-	<IonApp>
-		<IonReactRouter>
-			<IonTabs>
-				<IonRouterOutlet>
-					{/* Routing the path of /home to the home page */}
-					<Route
-						exact
-						path="/home"
-					>
-						<HomePage />
-					</Route>
-					{/* Routing the path of /search to the search page */}
-					<Route
-						exact
-						path="/search"
-					>
-						<SearchPage
-							id={""}
-							gameName={""}
-							skillLevel={""}
-							gameDescription={""}
-							court={{
-								courtName: "",
-								location: "",
-								courtType: "Indoor",
-								id: "",
-							}}
-							gameSize={0}
-							time={""}
-							ball={false}
-							pump={false}
-						/>
-					</Route>
-					{/* Routing the path of /create to the create page */}
-					<Route path="/create">
-						<CreatePage4 />
-					</Route>
-					{/* Routing the path of /chats to the chats page */}
-					<Route path="/chats">
-						<ChatsPage />
-					</Route>
-					{/* Routing the path of /profile to the profile page */}
-					<Route path="/profile">
-						<ProfilePage />
-					</Route>
-					{/* Routing the path of /gamedetails to the profile page */}
-					{/* <Route path="/gamedetails/:id">
-						<GameDetailsPage games={ } />
-					</Route> */}
-					<Route path="/games">
-						<GamesList />
-					</Route>
-					<Route path="/games/:gameId">
-						<EditPage />
-					</Route>
+const App: React.FC = () => {
+	const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-					{/* Routing the path of /editpage to render the game in the edit page */}
-					<Route path="/editpage">
-						<EditPage />
-					</Route>
-					{/* Routing the path of /disclaimer to the first disclaimer page in create game creation */}
-					<Route path="/disclaimer">
-						<DisclaimerPage />
-					</Route>
-					{/* Routing the path of /disclaimerbookingpag to the disclaimer about booking the gym */}
-					<Route path="/disclaimerbookingpage">
-						<DisclaimerBookingPage />
-					</Route>
+	useEffect(() => {
+		auth.onAuthStateChanged((user) => {
+			setIsAuthenticated(!!user);
+		});
+	}, []);
 
-					{/* Routing the path of /disclaimerbookingpag to the disclaimer about booking the gym */}
-					<Route path="/create3">
-						<CreatePage4 />
-					</Route>
-
-					{/* Routing an emoty path of / to the home page */}
-					<Route
-						exact
-						path="/"
-					>
-						<Redirect to="/search" />
-					</Route>
-				</IonRouterOutlet>
-				<IonTabBar slot="bottom">
-					<IonTabButton
-						tab="home"
-						href="/home"
-					>
-						<IonIcon
-							aria-hidden="true"
-							icon={homeOutline}
-						/>
-						<IonLabel>Home</IonLabel>
-					</IonTabButton>
-					<IonTabButton
-						tab="search"
-						href="/search"
-					>
-						<IonIcon
-							aria-hidden="true"
-							icon={searchOutline}
-						/>
-						<IonLabel>Search</IonLabel>
-					</IonTabButton>
-					<IonTabButton
-						tab="create"
-						href="/disclaimer"
-					>
-						<IonIcon
-							aria-hidden="true"
-							icon={addCircleOutline}
-						/>
-						<IonLabel>Create</IonLabel>
-					</IonTabButton>
-					<IonTabButton
-						tab="chats"
-						href="/chats"
-					>
-						<IonIcon
-							aria-hidden="true"
-							icon={chatbubbleOutline}
-						/>
-						<IonLabel>Chats</IonLabel>
-					</IonTabButton>
-					<IonTabButton
-						tab="profile"
-						href="/profile"
-					>
-						<IonIcon
-							aria-hidden="true"
-							icon={personOutline}
-						/>
-						<IonLabel>Profile</IonLabel>
-					</IonTabButton>
-				</IonTabBar>
-			</IonTabs>
-		</IonReactRouter>
-	</IonApp>
-);
+	return (
+		<IonApp>
+			<IonReactRouter>
+				{isAuthenticated ? (
+					<IonTabs>
+						<IonRouterOutlet>
+							<Switch>
+								<Route exact path="/home" component={HomePage} />
+								<Route exact path="/search" component={SearchPage} />
+								<Route path="/create" component={CreatePage4} />
+								<Route path="/chats" component={ChatsPage} />
+								<Route path="/profile" component={ProfilePage} />
+								{/* Uncomment and add your GameDetailsPage if needed
+                                <Route path="/gamedetails/:id" component={GameDetailsPage} /> */}
+								<Route path="/games" component={GamesList} />
+								<Route path="/games/:gameId" component={EditPage} />
+								<Route path="/editpage" component={EditPage} />
+								<Route path="/disclaimer" component={DisclaimerPage} />
+								<Route path="/disclaimerbookingpage" component={DisclaimerBookingPage} />
+								<Route path="/create3" component={CreatePage4} />
+								<Redirect from="/" to="/home" />
+							</Switch>
+						</IonRouterOutlet>
+						<IonTabBar slot="bottom">
+							<IonTabButton tab="home" href="/home">
+								<IonIcon icon={homeOutline} />
+								<IonLabel>Home</IonLabel>
+							</IonTabButton>
+							<IonTabButton tab="search" href="/search">
+								<IonIcon icon={searchOutline} />
+								<IonLabel>Search</IonLabel>
+							</IonTabButton>
+							<IonTabButton tab="create" href="/disclaimer">
+								<IonIcon icon={addCircleOutline} />
+								<IonLabel>Create</IonLabel>
+							</IonTabButton>
+							<IonTabButton tab="chats" href="/chats">
+								<IonIcon icon={chatbubbleOutline} />
+								<IonLabel>Chats</IonLabel>
+							</IonTabButton>
+							<IonTabButton tab="profile" href="/profile">
+								<IonIcon icon={personOutline} />
+								<IonLabel>Profile</IonLabel>
+							</IonTabButton>
+						</IonTabBar>
+					</IonTabs>
+				) : (
+					<LogIn />
+				)}
+			</IonReactRouter>
+		</IonApp>
+	);
+};
 
 export default App;
