@@ -66,22 +66,81 @@ const App: React.FC = () => {
 				{isAuthenticated ? (
 					<IonTabs>
 						<IonRouterOutlet>
-							<Switch>
-								<Route exact path="/home" component={HomePage} />
-								<Route exact path="/search" component={SearchPage} />
-								<Route path="/create" component={CreatePage4} />
-								<Route path="/chats" component={ChatsPage} />
-								<Route path="/profile" component={ProfilePage} />
-								{/* Uncomment and add your GameDetailsPage if needed
-                                <Route path="/gamedetails/:id" component={GameDetailsPage} /> */}
-								<Route path="/games" component={GamesList} />
-								<Route path="/games/:gameId" component={EditPage} />
-								<Route path="/editpage" component={EditPage} />
-								<Route path="/disclaimer" component={DisclaimerPage} />
-								<Route path="/disclaimerbookingpage" component={DisclaimerBookingPage} />
-								<Route path="/create3" component={CreatePage4} />
-								<Redirect from="/" to="/home" />
-							</Switch>
+							{/* Routing the path of /home to the home page */}
+							<Route
+								exact
+								path="/home"
+							>
+								<HomePage />
+							</Route>
+							{/* Routing the path of /search to the search page */}
+							<Route
+								exact
+								path="/search"
+							>
+								<SearchPage
+									id={""}
+									gameName={""}
+									skillLevel={""}
+									gameDescription={""}
+									court={{
+										courtName: "",
+										location: "",
+										courtType: "Indoor",
+										id: "",
+									}}
+									gameSize={0}
+									time={""}
+									ball={false}
+									pump={false}
+								/>
+							</Route>
+							{/* Routing the path of /create to the create page */}
+							<Route path="/create">
+								<CreatePage4 />
+							</Route>
+							{/* Routing the path of /chats to the chats page */}
+							<Route path="/chats">
+								<ChatsPage />
+							</Route>
+							{/* Routing the path of /profile to the profile page */}
+							<Route path="/profile">
+								<ProfilePage />
+							</Route>
+							{/* Routing the path of /gamedetails to the profile page */}
+							{/* <Route path="/gamedetails/:id">
+						<GameDetailsPage games={ } />
+					</Route> */}
+							<Route path="/games">
+								<GamesList />
+							</Route>
+							<Route path="/games/:gameId">
+								<EditPage />
+							</Route>
+
+							{/* Routing the path of /editpage to render the game in the edit page */}
+							<Route path="/editpage">
+								<EditPage />
+							</Route>
+							{/* Routing the path of /disclaimer to the first disclaimer page in create game creation */}
+							<Route path="/disclaimer">
+								<DisclaimerPage />
+							</Route>
+							{/* Routing the path of /disclaimerbookingpag to the disclaimer about booking the gym */}
+							<Route path="/disclaimerbookingpage">
+								<DisclaimerBookingPage />
+							</Route>
+							{/* Routing an emoty path of / to the home page */}
+							<Route
+								exact
+								path="/"
+							>
+								<Redirect to="/search" />
+							</Route>
+							{/* Routing the path of /disclaimerbookingpag to the disclaimer about booking the gym */}
+							<Route path="/create3">
+								<CreatePage4 />
+							</Route>
 						</IonRouterOutlet>
 						<IonTabBar slot="bottom">
 							<IonTabButton tab="home" href="/home">
